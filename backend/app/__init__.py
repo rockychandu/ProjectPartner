@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify
 from flask_login import LoginManager
 from backend.models.models import db, User
 from backend.app.config import Config

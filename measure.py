@@ -40,10 +40,10 @@ def analyze_directory(target_dir):
     file_sizes = []
     largest_files = []
 
+    IGNORED_DIRS = {'.git', '.pytest_cache', '__pycache__', 'venv', '.venv', 'env', 'node_modules', '.gemini', 'scratch', 'uploads', 'dist', 'build', '.idea', '.vscode'}
     for root, dirs, files in os.walk(target_dir):
-        # Exclude hidden, cache, and virtual environment folders
-        if any(ignored in root for ignored in ['.git', '.pytest_cache', '__pycache__', 'venv', 'node_modules', '.gemini', 'scratch', 'uploads']):
-            continue
+        dirs[:] = [d for d in dirs if d not in IGNORED_DIRS and not d.startswith('.')]
+
 
         for file in files:
             ext = os.path.splitext(file)[1].lower()

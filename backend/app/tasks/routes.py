@@ -35,7 +35,7 @@ def view_tasks(project_id):
                 assignee_name=t_data["assignee_name"],
                 priority=t_data["priority"],
                 estimated_hours=t_data["estimated_hours"],
-                deadline_day=t_data["deadline_day"],
+                deadline_day=t_data.get("deadline_day", 1),
                 required_skill=t_data["required_skill"],
                 status="Pending"
             )

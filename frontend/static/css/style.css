@@ -137,6 +137,8 @@ a:hover {
   left: 0;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  overflow-y: auto; /* Scrollable sidebar menu below logo */
+  max-height: 100vh;
 }
 
 .brand {

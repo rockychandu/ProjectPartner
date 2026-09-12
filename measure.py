@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TrainPlex Codebase Measurement Tool (measure.py)
+CodeMetrix Evaluation Engine & Code Measurement Tool (measure.py)
 Analyzes repository line counts, language distributions, git commit metrics, and code structure.
 Outputs measurement.json, codebase_repos.json, codebase_repos.csv, codebase_repo_mining.json.
 """

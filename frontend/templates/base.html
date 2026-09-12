@@ -46,7 +46,7 @@
         <li><a href="{{ url_for('teams.manage_team', project_id=proj.id) }}" class="nav-link"><i class="bi bi-people-fill"></i> Team & Roles</a></li>
         <li><a href="{{ url_for('tasks.view_tasks', project_id=proj.id) }}" class="nav-link"><i class="bi bi-kanban"></i> Task Distribution</a></li>
         <li><a href="{{ url_for('roadmap.view_roadmap', project_id=proj.id) }}" class="nav-link"><i class="bi bi-calendar3"></i> Development Roadmap</a></li>
-        <li><a href="{{ url_for('analyzer.view_analyzer', project_id=proj.id) }}" class="nav-link"><i class="bi bi-code-slash"></i> Project Analyzer</a></li>
+        <li><a href="{{ url_for('analyzer.view_analyzer', project_id=proj.id) }}" class="nav-link"><i class="bi bi-cpu-fill" style="color: #6366f1;"></i> CodePlex Measurement</a></li>
         <li><a href="{{ url_for('mentor.chat', project_id=proj.id) }}" class="nav-link"><i class="bi bi-robot"></i> Project Mentor</a></li>
         <li><a href="{{ url_for('documentation.view_documentation', project_id=proj.id) }}" class="nav-link"><i class="bi bi-journal-text"></i> Documentation (SRS & PDF)</a></li>
       </ul>

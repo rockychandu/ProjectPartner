@@ -74,7 +74,7 @@
     <div style="background: var(--bg-card-subtle); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
       <div style="font-size: 0.78rem; color: var(--brand-navy); text-transform: uppercase; font-weight: 900;">Recommended Next Step</div>
       <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 0.35rem;">
-        {{ guidance.recommended_next_step or 'Run the Project Analyzer to compare actual source code against the blueprint.' }}
+        {{ guidance.recommended_next_step or 'Run CodePlex Measurement to compare actual source code against the blueprint.' }}
       </div>
     </div>
 
@@ -107,7 +107,7 @@
 
     <div style="margin-top: 1.5rem;">
       <a href="{{ url_for('analyzer.view_analyzer', project_id=active_project.id) }}" class="btn btn-primary" style="width: 100%;">
-        <i class="bi bi-code-slash"></i> Import & Analyze Code Folder
+        <i class="bi bi-cpu-fill"></i> Run CodePlex Measurement
       </a>
     </div>
   </div>

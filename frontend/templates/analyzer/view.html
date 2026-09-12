@@ -93,8 +93,8 @@
 
 <div class="card" style="margin-top: 1.5rem; border-top: 4px solid #6366f1;">
   <div class="card-title">
-    <span><i class="bi bi-play-circle-fill" style="color: #6366f1;"></i> TrainPlex Evaluation Engine (measure.py)</span>
-    <span class="badge badge-info">ZIP Archive Inspector</span>
+    <span><i class="bi bi-play-circle-fill" style="color: #6366f1;"></i> CodeMetrix Evaluation Engine (measure.py)</span>
+    <span class="badge badge-info">CodePlex Measurement & AST Inspector</span>
   </div>
 
   <form id="measureForm" enctype="multipart/form-data">
@@ -108,7 +108,7 @@
       </button>
       <button type="button" id="btnClear" class="btn btn-outline" onclick="clearMeasureResults()">Clear</button>
       <span id="runSpinner" style="display: none; font-size: 0.9rem; color: var(--text-secondary);">
-        <i class="spinner-border spinner-border-sm"></i> Running TrainPlex checkers...
+        <i class="spinner-border spinner-border-sm"></i> Running CodeMetrix checkers...
       </span>
     </div>
   </form>
@@ -124,7 +124,7 @@ async function runTrainPlexChecks() {
   const btn = document.getElementById('btnRunChecks');
 
   outputArea.style.display = 'block';
-  outputArea.innerHTML = '<div style="color: #4f46e5; font-weight: bold;"><i class="bi bi-hourglass-split"></i> Running: TrainPlex checkers &rarr; deterministic collectors &rarr; measure.py...</div>';
+  outputArea.innerHTML = '<div style="color: #4f46e5; font-weight: bold;"><i class="bi bi-hourglass-split"></i> Running: CodeMetrix checkers &rarr; deterministic collectors &rarr; measure.py...</div>';
   spinner.style.display = 'inline-block';
   btn.disabled = true;
 

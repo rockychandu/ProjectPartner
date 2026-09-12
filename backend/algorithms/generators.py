@@ -330,85 +330,145 @@ class ProjectMentorEngine:
         q = query.lower().strip()
         p_title = getattr(project, 'title', 'your project') if project else 'your project'
         p_domain = getattr(project, 'domain', 'engineering') if project else 'engineering'
+        p_status = getattr(project, 'status', 'Development') if project else 'Development'
+        p_pct = getattr(project, 'progress_percentage', 0) if project else 0
 
-        greetings = ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'who are you', 'help', 'hi!', 'hello!', 'hey!']
-        if q in greetings or any(q == g or q.startswith(g + ' ') or q.endswith(' ' + g) for g in ['hi', 'hello', 'hey', 'greetings']):
-            p_status = getattr(project, 'status', 'planning') if project else 'planning'
-            p_pct = getattr(project, 'progress_percentage', 0) if project else 0
+        # Extract parsed details from analysis
+        detected_files = json.loads(analysis.files_detected or '[]') if analysis and getattr(analysis, 'files_detected', None) else []
+        detected_routes = json.loads(analysis.routes_detected or '[]') if analysis and getattr(analysis, 'routes_detected', None) else []
+        detected_models = json.loads(analysis.models_detected or '[]') if analysis and getattr(analysis, 'models_detected', None) else []
+        detected_tests = json.loads(analysis.tests_detected or '[]') if analysis and getattr(analysis, 'tests_detected', None) else []
 
+        # Category 1: Greetings & Introduction
+        greetings = ['hi', 'hello', 'hey', 'greetings', 'who are you', 'help', 'start', 'menu']
+        if any(q == g or q.startswith(g + ' ') or q.endswith(' ' + g) for g in greetings):
             return (
-                f"Hello! 👋 I am your dedicated Senior Project Mentor for **{p_title}**.\n\n"
-                f"I have reviewed your {p_domain} project setup ({p_status} phase, {p_pct}% progress).\n\n"
-                f"**Here's how I can help you today:**\n"
-                f"• **Recommended Next Steps** (Ask: *'What should I implement next?'*)\n"
-                f"• **Project Overview & Blueprint** (Ask: *'Explain my project blueprint'*) \n"
-                f"• **Task Breakdown** (Ask: *'Show my pending tasks'*)\n"
-                f"• **Code Analysis & Inspection** (Ask: *'Check my codebase status'*)\n\n"
-                f"What would you like to focus on right now?"
-            )
-
-        if any(k in q for k in ['project', 'overview', 'about', 'problem', 'solution', 'tell me']):
-            b_overview = getattr(blueprint, 'overview', 'Detailed offline software solution.') if blueprint else 'Planned software system.'
-            b_problem = getattr(blueprint, 'problem_statement', 'Engineering domain problem.') if blueprint else 'Domain challenge.'
-            
-            return (
-                f"**Project Context — {p_title}**\n\n"
+                f"Hello! 👋 I am your Senior AI Project Mentor for **{p_title}**.\n\n"
+                f"📊 **Current Project Snapshot:**\n"
                 f"• **Domain:** {p_domain}\n"
-                f"• **Problem Statement:** {b_problem}\n"
-                f"• **System Overview:** {b_overview}\n\n"
-                f"You can review your full architecture and folder structure under the **Project Blueprint** tab."
+                f"• **Status:** {p_status} ({p_pct}% Complete)\n"
+                f"• **AST Code Analysis:** {len(detected_files)} files, {len(detected_routes)} routes, {len(detected_models)} models detected.\n\n"
+                f"💡 **Ask me anything about your project:**\n"
+                f"1. *'What should I implement next?'*\n"
+                f"2. *'Explain my project blueprint & database schema'* \n"
+                f"3. *'Show my team tasks and priority workload'*\n"
+                f"4. *'How do I run CodeMetrix measurement?'*\n"
+                f"5. *'How do I unit test and debug my project?'*"
             )
 
-        if any(k in q for k in ['start', 'next', 'work on', 'what should i do', 'task', 'pending', 'progress', 'status']):
+        # Category 2: Next Steps & Recommended Priorities
+        if any(k in q for k in ['next', 'work on', 'what should i do', 'priority', 'pending', 'recommend', 'todo']):
             if analysis and getattr(analysis, 'development_guidance_json', None):
                 try:
                     guidance = json.loads(analysis.development_guidance_json or '{}')
-                    if guidance.get('recommended_next_step'):
+                    next_step = guidance.get('recommended_next_step')
+                    if next_step:
                         return (
-                            f"Based on our AST code analysis of your project:\n\n"
-                            f"📌 **Recommended Next Step:** {guidance.get('recommended_next_step')}\n\n"
-                            f"📊 **Current Implementation Progress:** {guidance.get('progress_percentage', 0)}%\n"
-                            f"• Auth Module: {'✅ Detected' if guidance.get('has_auth') else '❌ Missing'}\n"
-                            f"• Database Models: {'✅ Detected' if guidance.get('has_database') else '❌ Missing'}"
+                            f"🔍 **CodeMetrix AST Analysis Recommendations for {p_title}:**\n\n"
+                            f"📌 **Immediate Priority:** {next_step}\n\n"
+                            f"📈 **Implementation Progress:** {guidance.get('progress_percentage', p_pct)}%\n"
+                            f"• User Authentication: {'✅ Implemented' if guidance.get('has_auth') else '⚠️ Pending Implementation'}\n"
+                            f"• Relational Models: {'✅ Implemented' if guidance.get('has_database') else '⚠️ Pending Implementation'}\n"
+                            f"• Pytest Test Suite: {'✅ Implemented' if guidance.get('has_tests') else '⚠️ Pending Implementation'}\n\n"
+                            f"💡 *Tip: Check your **Task Distribution** tab to update task progress cards!*"
                         )
                 except Exception:
                     pass
 
             pending_tasks = [t for t in tasks if getattr(t, 'status', 'Pending') != 'Completed'] if tasks else []
             if pending_tasks:
-                next_t = pending_tasks[0]
+                t = pending_tasks[0]
                 return (
-                    f"According to your team task distribution graph:\n\n"
-                    f"📋 **Next Priority Task:** #{next_t.id} — {next_t.title}\n"
-                    f"• **Module:** {next_t.module_name}\n"
-                    f"• **Assigned To:** {next_t.assignee_name or 'Team'}\n"
-                    f"• **Priority:** {next_t.priority} ({next_t.estimated_hours} hrs estimated)\n"
-                    f"• **Description:** {next_t.description}"
+                    f"📋 **Next Planned Task Graph Priority for {p_title}:**\n\n"
+                    f"• **Task #{t.id}:** {t.title}\n"
+                    f"• **Target Module:** {t.module_name}\n"
+                    f"• **Assigned Member:** {t.assignee_name or 'Lead Developer'}\n"
+                    f"• **Estimated Effort:** {t.estimated_hours} Hours (Priority: {t.priority})\n"
+                    f"• **Description:** {t.description}\n\n"
+                    f"Once implemented, mark it complete under **Task Distribution**!"
                 )
-            
-            return f"Great job! All planned tasks for **{p_title}** are currently marked completed. Run the **Project Analyzer** to verify your codebase against the blueprint!"
 
-        if any(k in q for k in ['blueprint', 'module', 'architecture', 'stack', 'tech', 'technology', 'database', 'sqlite']):
+            return f"🎉 **All planned blueprint modules for {p_title} are implemented!** Next step: Run **CodePlex Measurement** to verify your codebase metrics."
+
+        # Category 3: Architecture, Blueprint & Tech Stack
+        if any(k in q for k in ['blueprint', 'architecture', 'structure', 'tech', 'stack', 'framework', 'pattern', 'mvc']):
             if blueprint:
-                b_overview = getattr(blueprint, 'overview', '')
-                b_arch = getattr(blueprint, 'architecture_overview', '')
+                b_overview = getattr(blueprint, 'overview', 'Modular software solution.')
+                b_arch = getattr(blueprint, 'architecture_overview', 'Modular MVC Architecture')
                 b_stack = getattr(blueprint, 'tech_stack_json', 'Python, Flask, SQLite')
-                b_db = getattr(blueprint, 'database_requirements', 'Relational Database')
+                b_folder = getattr(blueprint, 'folder_structure', 'app/\n  models/\n  templates/')
                 return (
-                    f"**Architecture & Tech Stack Breakdown for {p_title}:**\n\n"
-                    f"• **Tech Stack:** {b_stack}\n"
-                    f"• **Database Specs:** {b_db}\n"
-                    f"• **Architecture:** {b_arch}\n"
-                    f"• **System Overview:** {b_overview}"
+                    f"🏗️ **System Architecture & Technology Stack for {p_title}:**\n\n"
+                    f"• **Technology Stack:** {b_stack}\n"
+                    f"• **Architecture Pattern:** {b_arch}\n"
+                    f"• **System Overview:** {b_overview}\n\n"
+                    f"📁 **Recommended Directory Structure:**\n```\n{b_folder}\n```"
                 )
 
+        # Category 4: Database, Schema & Models
+        if any(k in q for k in ['database', 'db', 'sqlite', 'sql', 'model', 'schema', 'orm', 'table', 'sqlalchemy']):
+            if detected_models:
+                models_list = ", ".join([f"`{m}`" for m in detected_models])
+                return (
+                    f"💾 **Database Schema Status for {p_title}:**\n\n"
+                    f"• **Detected Models:** {models_list}\n"
+                    f"• **Database Engine:** SQLite / SQLAlchemy ORM\n\n"
+                    f"💡 **ORM Best Practice:** Ensure all models extend `db.Model`, define primary keys (`db.Column(db.Integer, primary_key=True)`), and use foreign key relationships for relational data integrity."
+                )
+            return (
+                f"💾 **Database & Schema Requirements for {p_title}:**\n\n"
+                f"• **Database Engine:** SQLite (Zero configuration, lightweight relational storage)\n"
+                f"• **Recommended Models:** Define `User`, `{p_domain.replace(' ', '')}Data`, and `Log` models.\n"
+                f"• **Initialization:** Use `db.create_all()` inside your Flask application context."
+            )
+
+        # Category 5: CodeMetrix / CodePlex Measurement / LOC
+        if any(k in q for k in ['codemetrix', 'codeplex', 'measure', 'loc', 'lines of code', 'checker', 'trainplex']):
+            return (
+                f"⚡ **CodeMetrix Evaluation Engine (measure.py) Guidance:**\n\n"
+                f"• **Purpose:** Evaluates your repository LOC count, language distribution, file counts, and AST tree metrics.\n"
+                f"• **Access:** Select **CodePlex Measurement** from the left sidebar.\n"
+                f"• **Execution:** Upload your project `.zip` archive (supports up to 100 MB). The engine runs `measure.py` asynchronously with stdout/stderr capture and instant JSON metrics!\n\n"
+                f"📊 *Current AST Code Status: {len(detected_files)} files, {len(detected_routes)} routes detected.*"
+            )
+
+        # Category 6: Team & Task Distribution
+        if any(k in q for k in ['team', 'task', 'member', 'assignee', 'role', 'workload']):
+            if tasks:
+                completed = len([t for t in tasks if getattr(t, 'status', '') == 'Completed'])
+                pending = len(tasks) - completed
+                return (
+                    f"👥 **Team Task Distribution Graph for {p_title}:**\n\n"
+                    f"• **Total Tasks Planned:** {len(tasks)}\n"
+                    f"• **Completed:** {completed} | **Pending:** {pending}\n\n"
+                    f"You can reassign task cards, adjust estimated hours, and update statuses under **Team & Roles** and **Task Distribution**."
+                )
+
+        # Category 7: Testing & QA
+        if any(k in q for k in ['test', 'pytest', 'unit', 'quality', 'ast', 'coverage', 'assert']):
+            return (
+                f"🧪 **Testing & Quality Assurance Guide:**\n\n"
+                f"• **Test Framework:** Pytest (`python -m pytest tests/ -v`)\n"
+                f"• **Detected Test Functions:** {len(detected_tests)} tests detected in AST scan.\n"
+                f"• **Testing Rule:** Every route and data model should have a corresponding test case verifying 200 OK responses and database operations."
+            )
+
+        # Category 8: Documentation & SRS PDF
+        if any(k in q for k in ['doc', 'documentation', 'srs', 'readme', 'pdf', 'export']):
+            return (
+                f"📄 **Documentation & PDF Specification Generator:**\n\n"
+                f"• **Features:** Automatically generates Software Requirements Specification (SRS), README markdown, and downloadable PDF reports containing user metadata, problem statement, and project abstract.\n"
+                f"• **Access:** Click **Documentation (SRS & PDF)** in the left sidebar menu."
+            )
+
+        # Default Catch-all Intelligent Response
         return (
-            f"I am your dedicated mentor for **{p_title}**.\n\n"
-            f"Here are key areas I can assist you with right now:\n"
+            f"🤖 **Dedicated Senior Project Mentor for {p_title}:**\n\n"
+            f"I am your dedicated mentor ready to help you build your project! Here are popular questions you can ask:\n"
             f"1. *'What should I implement next?'*\n"
-            f"2. *'Explain my project blueprint and database requirements'*\n"
-            f"3. *'What is the status of my team's tasks?'*\n"
-            f"4. *'How do I document this project?'*"
+            f"2. *'Explain my architecture & blueprint'* \n"
+            f"3. *'How do I test and debug my routes?'*\n"
+            f"4. *'How do I run CodePlex Measurement?'*"
         )
 
 

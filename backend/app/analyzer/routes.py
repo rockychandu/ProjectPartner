@@ -212,7 +212,7 @@ def api_run_checks():
         return jsonify({
             "success": True,
             "exit_code": exit_code,
-            "message": "TrainPlex checks and measure.py completed successfully",
+            "message": "CodeMetrix checks and measure.py completed successfully",
             "stdout": stdout,
             "stderr": stderr,
             "total_loc": measurement_data.get('tree', {}).get('total_loc', 0),

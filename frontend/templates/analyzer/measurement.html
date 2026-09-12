@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}CodePlex Measurement{% endblock %}
+{% block header_title %}CodePlex Measurement & CodeMetrix Evaluation Engine{% endblock %}
+
+{% block content %}
+<div class="card" style="border-top: 5px solid #6366f1;">
+  <div class="card-title">
+    <span><i class="bi bi-cpu-fill" style="color: #6366f1;"></i> CodePlex Measurement: {{ project.title }}</span>
+    <span class="badge badge-info">CodeMetrix Evaluation Engine (measure.py)</span>
+  </div>
+
+  <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+    Evaluate repository line counts, file distributions, AST structure, and quality metrics using the standalone <strong>CodeMetrix Evaluation Engine</strong>. Supports repository archives up to 100 MB.
+  </p>
+
+  <form id="measureForm" enctype="multipart/form-data">
+    <div class="form-group">
+      <label class="form-label" style="font-weight: 800; color: var(--brand-navy);">Upload Project ZIP Archive (.zip)</label>
+      <input type="file" id="measureZip" name="project_zip" class="form-control" accept=".zip">
+      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+        Leave empty to automatically evaluate the current active workspace repository path.
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem;">
+      <button type="button" id="btnRunChecks" class="btn" style="background: #4f46e5; color: white; font-weight: 700; padding: 0.75rem 1.75rem;">
+        <i class="bi bi-play-circle-fill"></i> Run Checks + measure.py
+      </button>
+      <button type="button" id="btnClear" class="btn btn-outline" onclick="clearMeasureResults()">Clear Output</button>
+      <span id="runSpinner" style="display: none; font-size: 0.9rem; color: var(--text-secondary);">
+        <i class="spinner-border spinner-border-sm"></i> Running CodeMetrix checkers...
+      </span>
+    </div>
+  </form>
+
+  <div id="measureOutputArea" style="margin-top: 1.5rem; display: none;"></div>
+</div>
+
+<script>
+async function runCodeMetrixChecks() {
+  const fileInput = document.getElementById('measureZip');
+  const spinner = document.getElementById('runSpinner');
+  const outputArea = document.getElementById('measureOutputArea');
+  const btn = document.getElementById('btnRunChecks');
+
+  outputArea.style.display = 'block';
+  outputArea.innerHTML = '<div style="color: #4f46e5; font-weight: bold;"><i class="bi bi-hourglass-split"></i> Running: CodeMetrix checkers &rarr; deterministic collectors &rarr; measure.py...</div>';
+  spinner.style.display = 'inline-block';
+  btn.disabled = true;
+
+  const formData = new FormData();
+  if (fileInput.files.length > 0) {
+    formData.append('project_zip', fileInput.files[0]);
+  }
+
+  try {
+    const response = await fetch('{{ url_for("analyzer.api_run_checks") }}', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: formData
+    });
+
+    const contentType = response.headers.get('content-type') || '';
+
+    // Inspect HTTP Content-Type before calling response.json()
+    if (!contentType.includes('application/json')) {
+      const rawText = await response.text();
+      console.error('Non-JSON HTML response received:', rawText);
+      outputArea.innerHTML = `
+        <div style="background: #fef2f2; border: 1px solid #fca5a5; padding: 1rem; border-radius: 6px; color: #991b1b;">
+          <h4 style="margin: 0 0 0.5rem 0; font-weight: 800;"><i class="bi bi-exclamation-triangle-fill"></i> Server Returned Non-JSON Response (HTTP ${response.status})</h4>
+          <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">The backend or reverse proxy returned an HTML error instead of JSON. Raw error details below:</p>
+          <pre style="background: #fff; padding: 0.75rem; border: 1px solid #f87171; border-radius: 4px; max-height: 200px; overflow: auto; font-size: 0.8rem;">${escapeHtml(rawText)}</pre>
+        </div>`;
+      return;
+    }
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      outputArea.innerHTML = `
+        <div style="background: #fef2f2; border: 1px solid #fca5a5; padding: 1rem; border-radius: 6px; color: #991b1b;">
+          <h4 style="margin: 0 0 0.5rem 0; font-weight: 800;"><i class="bi bi-x-circle-fill"></i> Check Failed (Exit Code: ${data.exit_code || response.status})</h4>
+          <p style="margin-bottom: 0.5rem; font-weight: 700;">${escapeHtml(data.error || 'Unknown execution error')}</p>
+          ${data.stderr ? `<label style="font-size: 0.8rem; font-weight: bold;">Stderr Output:</label><pre style="background: #1e293b; color: #f87171; padding: 0.75rem; border-radius: 4px; font-size: 0.8rem; max-height: 200px; overflow: auto;">${escapeHtml(data.stderr)}</pre>` : ''}
+          ${data.stdout ? `<label style="font-size: 0.8rem; font-weight: bold;">Stdout Output:</label><pre style="background: #1e293b; color: #e2e8f0; padding: 0.75rem; border-radius: 4px; font-size: 0.8rem; max-height: 200px; overflow: auto;">${escapeHtml(data.stdout)}</pre>` : ''}
+        </div>`;
+      return;
+    }
+
+    // Render valid JSON results
+    outputArea.innerHTML = `
+      <div style="background: #f0fdf4; border: 1px solid #86efac; padding: 1.25rem; border-radius: 6px; color: #166534;">
+        <h4 style="margin: 0 0 0.75rem 0; font-weight: 800;"><i class="bi bi-check-circle-fill" style="color: #22c55e;"></i> CodeMetrix measure.py Completed Successfully!</h4>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+          <div style="background: #fff; padding: 0.75rem; border-radius: 4px; border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #15803d; font-weight: 700;">TOTAL LOC</div>
+            <div style="font-size: 1.25rem; font-weight: 900; color: #166534;">${data.total_loc.toLocaleString()} LOC</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: 4px; border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #15803d; font-weight: 700;">TOTAL SOURCE FILES</div>
+            <div style="font-size: 1.25rem; font-weight: 900; color: #166534;">${data.total_files} files</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: 4px; border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #15803d; font-weight: 700;">PRIMARY LANGUAGE</div>
+            <div style="font-size: 1.25rem; font-weight: 900; color: #166534;">${data.primary_language}</div>
+          </div>
+        </div>
+        <details open style="margin-top: 0.75rem;">
+          <summary style="cursor: pointer; font-weight: bold; color: #15803d;">View Raw Measurement JSON Output</summary>
+          <pre style="background: #0f172a; color: #38bdf8; padding: 1rem; border-radius: 4px; max-height: 350px; overflow: auto; font-size: 0.8rem; margin-top: 0.5rem;">${escapeHtml(JSON.stringify(data.measurement, null, 2))}</pre>
+        </details>
+      </div>`;
+
+  } catch (err) {
+    console.error('Fetch Exception:', err);
+    outputArea.innerHTML = `
+      <div style="background: #fef2f2; border: 1px solid #fca5a5; padding: 1rem; border-radius: 6px; color: #991b1b;">
+        <h4 style="margin: 0 0 0.5rem 0; font-weight: 800;"><i class="bi bi-wifi-off"></i> Network or Upload Error</h4>
+        <p style="font-size: 0.85rem; margin: 0;">${escapeHtml(err.message)}</p>
+      </div>`;
+  } finally {
+    spinner.style.display = 'none';
+    btn.disabled = false;
+  }
+}
+
+function clearMeasureResults() {
+  document.getElementById('measureOutputArea').style.display = 'none';
+  document.getElementById('measureOutputArea').innerHTML = '';
+  document.getElementById('measureZip').value = '';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+document.getElementById('btnRunChecks').addEventListener('click', runCodeMetrixChecks);
+</script>
+{% endblock %}

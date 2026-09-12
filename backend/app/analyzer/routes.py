@@ -101,6 +101,17 @@ def view_analyzer(project_id):
     )
 
 
+@analyzer_bp.route('/measurement/<int:project_id>', methods=['GET'])
+@login_required
+def view_measurement(project_id):
+    """
+    CodePlex Measurement Route.
+    Dedicated interface for running CodeMetrix measure.py evaluation and inspecting repository quality metrics.
+    """
+    project = Project.query.get_or_404(project_id)
+    return render_template('analyzer/measurement.html', project=project)
+
+
 @analyzer_bp.route('/api/run-checks', methods=['POST'])
 @analyzer_bp.route('/run-checks', methods=['POST'])
 def api_run_checks():

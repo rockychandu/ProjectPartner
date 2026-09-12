@@ -1,0 +1,26 @@
+[
+  {
+    "rule_id": "rule_no_api",
+    "description": "If user specifies API Not Allowed, filter out projects requiring external cloud APIs.",
+    "condition": "api_required == false",
+    "action": "reject_if_api_true"
+  },
+  {
+    "rule_id": "rule_hardware_constraint",
+    "description": "If user specifies Hardware Not Required, exclude projects requiring microcontroller or IoT hardware.",
+    "condition": "hardware_required == 'Not Required'",
+    "action": "reject_if_hardware_needed"
+  },
+  {
+    "rule_id": "rule_duration_feasibility",
+    "description": "Reject Advanced high-complexity projects if duration is less than 4 weeks.",
+    "condition": "difficulty == 'Advanced' and duration_weeks < 4",
+    "action": "reject_infeasible_schedule"
+  },
+  {
+    "rule_id": "rule_team_size_workload",
+    "description": "Warn or adjust workload if team size is 1 for high-complexity project.",
+    "condition": "team_size == 1 and complexity == 'High'",
+    "action": "adjust_scope_to_intermediate"
+  }
+]

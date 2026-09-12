@@ -1,0 +1,17 @@
+[
+  {
+    "id": "arch_monolith",
+    "name": "Modular MVC Architecture",
+    "description": "Clean separation of Models, Views, and Controllers with Blueprint routing."
+  },
+  {
+    "id": "arch_pipeline",
+    "name": "Data Pipeline & Inference Architecture",
+    "description": "Sequential data ingestion -> preprocessing -> algorithm execution -> storage -> reporting."
+  },
+  {
+    "id": "arch_micro_services",
+    "name": "Decoupled Service-Oriented Architecture",
+    "description": "Independent backend service modules communicating via internal API routes."
+  }
+]

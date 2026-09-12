@@ -1,0 +1,32 @@
+[
+  {
+    "id": "alg_tfidf",
+    "name": "TF-IDF + Cosine Similarity",
+    "category": "NLP / Recommendation",
+    "description": "Calculates semantic similarity across document feature vectors."
+  },
+  {
+    "id": "alg_random_forest",
+    "name": "Random Forest Classifier",
+    "category": "Machine Learning",
+    "description": "Ensemble decision tree model for robust classification tasks."
+  },
+  {
+    "id": "alg_cnn",
+    "name": "Convolutional Feature Extraction / Classification",
+    "category": "Computer Vision",
+    "description": "Extracts spatial visual features for image category classification."
+  },
+  {
+    "id": "alg_dijkstra",
+    "name": "Dijkstra Shortest Path / Optimization",
+    "category": "Graph Theory",
+    "description": "Computes optimal paths across weighted graph nodes."
+  },
+  {
+    "id": "alg_ast_traversal",
+    "name": "Abstract Syntax Tree Parsing & Traversal",
+    "category": "Code Analysis",
+    "description": "Parses source code into syntactic node structures to detect structural patterns."
+  }
+]

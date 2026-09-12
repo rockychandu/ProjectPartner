@@ -1,0 +1,66 @@
+[
+  {
+    "id": "prob_crop_disease",
+    "domain": "Agriculture",
+    "title": "Offline Leaf Pest & Disease Identification",
+    "description": "Farmers in remote regions lack immediate access to agricultural experts to diagnose leaf diseases, leading to crop loss.",
+    "target_users": ["Smallholder Farmers", "Agronomists"],
+    "required_tech_category": ["Computer Vision", "Machine Learning"]
+  },
+  {
+    "id": "prob_patient_triage",
+    "domain": "Healthcare",
+    "title": "Outpatient Symptom Triage & Appointment Prioritization",
+    "description": "Rural clinics experience long wait times because patient urgency is not systematically triaged before doctor consultations.",
+    "target_users": ["Clinic Nurses", "Patients"],
+    "required_tech_category": ["NLP", "Rule Engine", "Web Application"]
+  },
+  {
+    "id": "prob_code_plagiarism",
+    "domain": "Education",
+    "title": "AST-Based Student Code Plagiarism & Similarity Detection",
+    "description": "Computer science instructors struggle to identify disguised code plagiarisms across large programming assignments.",
+    "target_users": ["Professors", "Teaching Assistants"],
+    "required_tech_category": ["Python AST", "Similarity Algorithm"]
+  },
+  {
+    "id": "prob_fraud_txn",
+    "domain": "Finance & FinTech",
+    "title": "Real-time Micro-transaction Anomaly & Fraud Guard",
+    "description": "Small businesses lack automated tools to detect anomalous refund and payment patterns in daily store ledgers.",
+    "target_users": ["Small Merchants", "Accountants"],
+    "required_tech_category": ["Machine Learning", "Data Analytics"]
+  },
+  {
+    "id": "prob_log_anomaly",
+    "domain": "Cybersecurity",
+    "title": "System Access Log Security & Intrusion Monitor",
+    "description": "System administrators need lightweight local tools to parse server authentication logs and alert on suspicious IP patterns.",
+    "target_users": ["System Administrators", "DevOps Engineers"],
+    "required_tech_category": ["Parsing", "Pattern Matching"]
+  },
+  {
+    "id": "prob_fleet_route",
+    "domain": "Transportation & Logistics",
+    "title": "Local Delivery Route & Fuel Efficiency Planner",
+    "description": "Local courier services waste fuel due to unoptimized delivery stopping sequences across city zones.",
+    "target_users": ["Delivery Drivers", "Dispatch Managers"],
+    "required_tech_category": ["Graph Algorithms", "Optimization"]
+  },
+  {
+    "id": "prob_energy_logger",
+    "domain": "IoT & Smart Systems",
+    "title": "Smart Campus Energy Peak-Load Analyzer",
+    "description": "College facility managers lack visibility into off-peak electrical waste across university lab buildings.",
+    "target_users": ["Facility Managers", "Campus Energy Auditors"],
+    "required_tech_category": ["Time-Series Data", "Dashboards"]
+  },
+  {
+    "id": "prob_inventory_alert",
+    "domain": "E-Commerce & Retail",
+    "title": "Predictive Stock Reordering & Expiry Tracker",
+    "description": "Independent grocery store owners frequently run out of high-demand goods due to manual inventory counting.",
+    "target_users": ["Store Managers", "Inventory Clerks"],
+    "required_tech_category": ["Database", "Predictive Analytics"]
+  }
+]

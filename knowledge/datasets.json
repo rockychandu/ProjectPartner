@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ds_plantvillage",
+    "name": "PlantVillage Crop Leaf Dataset",
+    "domain": "Agriculture",
+    "description": "54,000 images of healthy and diseased crop leaves across 14 crop species."
+  },
+  {
+    "id": "ds_synthetic_triage",
+    "name": "Local Clinical Symptom Dataset",
+    "domain": "Healthcare",
+    "description": "Structured records of patient presenting symptoms, vitals, and triage urgency classes."
+  },
+  {
+    "id": "ds_code_corpus",
+    "name": "Student AST Python Submissions Corpus",
+    "domain": "Education",
+    "description": "Collection of student Python solution scripts for algorithmic assignments."
+  },
+  {
+    "id": "ds_credit_transactions",
+    "name": "Retail Store Ledger Micro-Transactions",
+    "domain": "Finance & FinTech",
+    "description": "Anonymized store ledger transactions labeled with normal and anomalous flags."
+  },
+  {
+    "id": "ds_auth_logs",
+    "name": "Linux Syslog Authentication Corpus",
+    "domain": "Cybersecurity",
+    "description": "Authentic system access log files containing SSH auth attempts and IP addresses."
+  }
+]

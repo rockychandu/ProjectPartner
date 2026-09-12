@@ -1,0 +1,14 @@
+[
+  {
+    "pattern": "MVC_FLASK",
+    "description": "Standard Flask application structure with Blueprints, SQLAlchemy models, Jinja2 templates, and static assets.",
+    "expected_files": ["app.py", "run.py", "models.py", "routes.py", "requirements.txt"],
+    "expected_dirs": ["templates", "static"]
+  },
+  {
+    "pattern": "ML_PIPELINE",
+    "description": "Machine learning pipeline with data loader, model trainer, inference predictor, and evaluator.",
+    "expected_files": ["train.py", "predict.py", "model.pkl"],
+    "expected_dirs": ["data", "models"]
+  }
+]

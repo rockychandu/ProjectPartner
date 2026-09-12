@@ -1,0 +1,50 @@
+[
+  {
+    "id": "tech_py_cv",
+    "name": "Python + Computer Vision",
+    "category": "Machine Learning",
+    "languages": ["Python"],
+    "frameworks": ["OpenCV", "PIL", "Scikit-image"],
+    "requires_api": false
+  },
+  {
+    "id": "tech_py_ml",
+    "name": "Python + Scikit-Learn",
+    "category": "Machine Learning",
+    "languages": ["Python"],
+    "frameworks": ["Scikit-Learn", "Pandas", "NumPy"],
+    "requires_api": false
+  },
+  {
+    "id": "tech_py_flask",
+    "name": "Python + Flask Web Stack",
+    "category": "Web Application",
+    "languages": ["Python", "HTML", "CSS", "JavaScript"],
+    "frameworks": ["Flask", "Jinja2", "SQLite"],
+    "requires_api": false
+  },
+  {
+    "id": "tech_ast_nlp",
+    "name": "Python AST & Local NLP",
+    "category": "Static Analysis / NLP",
+    "languages": ["Python"],
+    "frameworks": ["ast", "Scikit-Learn TF-IDF"],
+    "requires_api": false
+  },
+  {
+    "id": "tech_js_node",
+    "name": "JavaScript + Node.js / Express",
+    "category": "Web Application",
+    "languages": ["JavaScript"],
+    "frameworks": ["Express", "Node.js", "SQLite"],
+    "requires_api": false
+  },
+  {
+    "id": "tech_iot_pi",
+    "name": "Python + Raspberry Pi / Sensor Logger",
+    "category": "IoT & Embedded",
+    "languages": ["Python", "C++"],
+    "frameworks": ["RPi.GPIO", "SQLite"],
+    "requires_api": false
+  }
+]

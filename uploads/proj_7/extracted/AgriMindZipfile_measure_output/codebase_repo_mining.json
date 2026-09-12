@@ -1,0 +1,16 @@
+{
+  "repo_id": "repo-5012bc8e6714",
+  "measurer_version": "repo-quality-evaluation-measure-ext@1",
+  "provider": "claude",
+  "model": "claude-opus-5",
+  "mined_at": "2026-09-07T12:44:38.600651+00:00",
+  "total_candidates": 0,
+  "n_net_new": 0,
+  "n_agentic": 0,
+  "n_bug_repair": 0,
+  "n_repo_evolution": 0,
+  "scored": false,
+  "mined_task_summaries": [],
+  "skip_reason": "llm_disabled",
+  "mine_unavailable_reason": "agentic mining skipped (--no-llm); task-type counts are reported as zero-because-not-run, not as measured-none"
+}

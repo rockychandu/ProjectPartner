@@ -1,0 +1,42 @@
+[
+  {
+    "id": "dom_agri",
+    "name": "Agriculture",
+    "description": "Smart farming, crop monitoring, yield prediction, pest detection, and supply chain tracking for agriculture."
+  },
+  {
+    "id": "dom_health",
+    "name": "Healthcare",
+    "description": "Patient record management, disease diagnostic assistance, appointment scheduling, medical imaging, and triage."
+  },
+  {
+    "id": "dom_edu",
+    "name": "Education",
+    "description": "Student assessment, adaptive learning, automated grading, attendance tracking, and peer collaboration platforms."
+  },
+  {
+    "id": "dom_fin",
+    "name": "Finance & FinTech",
+    "description": "Expense tracking, fraud detection, micro-loan risk assessment, personal budgeting, and investment analytics."
+  },
+  {
+    "id": "dom_cyber",
+    "name": "Cybersecurity",
+    "description": "Log anomaly detection, network intrusion monitoring, password strength audits, and security vulnerability scanning."
+  },
+  {
+    "id": "dom_logistics",
+    "name": "Transportation & Logistics",
+    "description": "Vehicle fleet tracking, route optimization, warehouse inventory management, and shipment status alerts."
+  },
+  {
+    "id": "dom_iot",
+    "name": "IoT & Smart Systems",
+    "description": "Home automation, environmental sensor data logging, energy consumption management, and appliance monitoring."
+  },
+  {
+    "id": "dom_ecom",
+    "name": "E-Commerce & Retail",
+    "description": "Product cataloging, order fulfillment, inventory management, review sentiment analysis, and cart recommendation."
+  }
+]

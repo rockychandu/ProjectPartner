@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Student Profile{% endblock %}
+{% block header_title %}Student Profile & Preferences{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-person-gear" style="color: var(--brand-teal);"></i> Manage Your Technical Profile</span>
+    <span class="badge badge-info">Affects Project Recommendation Scoring</span>
+  </div>
+
+  <form method="POST" action="{{ url_for('users.profile') }}">
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Programming Languages (Select Multiple)</label>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; background: var(--bg-card-subtle); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          {% for lang in ['Python', 'JavaScript', 'HTML', 'CSS', 'SQL', 'C++', 'Java'] %}
+          <label style="font-size: 0.9rem; color: var(--text-primary); cursor: pointer; font-weight: 600;">
+            <input type="checkbox" name="languages" value="{{ lang }}" {% if lang in languages %}checked{% endif %}> {{ lang }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Frameworks & Technologies</label>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; background: var(--bg-card-subtle); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          {% for tech in ['Flask', 'Django', 'Scikit-Learn', 'Pandas', 'OpenCV', 'Express.js', 'Pytest', 'SQLAlchemy'] %}
+          <label style="font-size: 0.9rem; color: var(--text-primary); cursor: pointer; font-weight: 600;">
+            <input type="checkbox" name="technologies" value="{{ tech }}" {% if tech in technologies %}checked{% endif %}> {{ tech }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Technical Skills</label>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; background: var(--bg-card-subtle); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          {% for sk in ['Frontend', 'Backend', 'Machine Learning', 'Computer Vision', 'Database', 'Static Analysis', 'QA & Testing'] %}
+          <label style="font-size: 0.9rem; color: var(--text-primary); cursor: pointer; font-weight: 600;">
+            <input type="checkbox" name="skills" value="{{ sk }}" {% if sk in skills %}checked{% endif %}> {{ sk }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Domains of Interest</label>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; background: var(--bg-card-subtle); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          {% for dom in ['Agriculture', 'Healthcare', 'Education', 'Finance & FinTech', 'Cybersecurity', 'Transportation & Logistics', 'IoT & Smart Systems', 'E-Commerce & Retail'] %}
+          <label style="font-size: 0.9rem; color: var(--text-primary); cursor: pointer; font-weight: 600;">
+            <input type="checkbox" name="domains" value="{{ dom }}" {% if dom in domains %}checked{% endif %}> {{ dom }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="form-group">
+        <label class="form-label">Available Time (Hours / Week)</label>
+        <input type="number" name="available_time" class="form-control" value="{{ profile.available_time_hours_per_week or 10 }}" min="2" max="60">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Preferred Project Difficulty</label>
+        <select name="preferred_difficulty" class="form-control">
+          <option value="Beginner" {% if profile.preferred_difficulty == 'Beginner' %}selected{% endif %}>Beginner</option>
+          <option value="Intermediate" {% if profile.preferred_difficulty == 'Intermediate' or not profile.preferred_difficulty %}selected{% endif %}>Intermediate</option>
+          <option value="Advanced" {% if profile.preferred_difficulty == 'Advanced' %}selected{% endif %}>Advanced</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Team Preference</label>
+        <select name="team_preference" class="form-control">
+          <option value="Solo" {% if profile.team_preference == 'Solo' %}selected{% endif %}>Solo Project</option>
+          <option value="Team" {% if profile.team_preference == 'Team' or not profile.team_preference %}selected{% endif %}>Team Collaboration</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Previous Project Experience Summary</label>
+      <textarea name="previous_projects" class="form-control" rows="3" placeholder="Briefly describe projects you built previously (e.g. Weather App in Python, Web Store in HTML/JS)...">{{ profile.previous_projects or '' }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary"><i class="bi bi-save-fill"></i> Save Profile Details</button>
+  </form>
+</div>
+{% endblock %}

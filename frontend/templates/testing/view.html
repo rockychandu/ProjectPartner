@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Project Testing Suite{% endblock %}
+{% block header_title %}Project Testing & Quality Assurance Suite{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-check2-square"></i> Testing Assistance: {{ project.title }}</span>
+    <span class="badge badge-success">Static Analysis & Test Generation</span>
+  </div>
+
+  <h3 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;">System Quality & Verification Report</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Verification Domain</th>
+        <th>Status</th>
+        <th>Empirical Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in report %}
+      <tr>
+        <td><strong style="color: white;">{{ r.test_name }}</strong></td>
+        <td>
+          <span class="badge {% if r.status == 'PASS' %}badge-success{% elif r.status == 'WARNING' %}badge-warning{% else %}badge-danger{% endif %}">
+            {{ r.status }}
+          </span>
+        </td>
+        <td style="font-size: 0.85rem; color: var(--text-secondary);">{{ r.details }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="margin-top: 2rem;">
+    <form method="POST" action="{{ url_for('testing_assistance.view_testing', project_id=project.id) }}">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-magic"></i> Generate Automated Pytest Test Suite
+      </button>
+    </form>
+  </div>
+
+  {% if test_code %}
+  <div style="margin-top: 1.5rem;">
+    <h3 style="color: white; font-size: 1.05rem; margin-bottom: 0.5rem;">Generated Pytest Suite (`tests/test_project.py`)</h3>
+    <pre style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--accent-success); font-size: 0.85rem;">{{ test_code }}</pre>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

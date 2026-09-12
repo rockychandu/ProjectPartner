@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to ProjectPartner{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <div style="max-width: 850px;">
+    <div style="margin-bottom: 2rem;">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ProjectPartner Logo" style="height: 75px; width: auto; object-fit: contain;">
+    </div>
+
+    <div class="brand-badge" style="display: inline-block; margin-bottom: 1.5rem; padding: 0.45rem 1.35rem; font-size: 0.9rem; border-radius: 30px;">
+      <i class="bi bi-person-heart"></i> AI Assists the Student — The Student Owns the Project
+    </div>
+    
+    <h1 style="font-size: 3.2rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 1.5rem; line-height: 1.2; letter-spacing: -0.02em;">
+      Student Project Discovery, Planning & Guidance Platform
+    </h1>
+    
+    <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 2.5rem; line-height: 1.7;">
+      Discover practical, humanized software and engineering projects. Turn your ideas into structured blueprints, dependency-aware task graphs, AST code analysis, and fact-verified SRS documentation — <strong>100% offline with zero cloud API dependencies</strong>.
+    </p>
+
+    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3.5rem;">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('workspace.dashboard') }}" class="btn btn-primary" style="padding: 0.9rem 2.25rem; font-size: 1.1rem;"><i class="bi bi-speedometer2"></i> Open Workspace Dashboard</a>
+      {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="padding: 0.9rem 2.25rem; font-size: 1.1rem;"><i class="bi bi-person-plus-fill"></i> Get Started Free</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary" style="padding: 0.9rem 2.25rem; font-size: 1.1rem;"><i class="bi bi-box-arrow-in-right"></i> Student Sign In</a>
+      {% endif %}
+    </div>
+
+    <div style="margin-bottom: 3rem; background: #ffffff; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-navy); font-weight: 800; margin-bottom: 0.75rem;">Complete Student Project Lifecycle</div>
+      <div style="font-size: 0.85rem; font-weight: 700; color: var(--brand-teal); display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem;">
+        <span>IDEA</span> ➔ <span>SELECTION</span> ➔ <span>BLUEPRINT</span> ➔ <span>TEAM</span> ➔ <span>TASKS</span> ➔ <span>ROADMAP</span> ➔ <span>DEVELOPMENT</span> ➔ <span>TESTING</span> ➔ <span>DOCUMENTATION</span> ➔ <span>RESUME</span>
+      </div>
+    </div>
+
+    <div class="grid-3" style="text-align: left;">
+      <div class="card">
+        <i class="bi bi-cpu-fill" style="font-size: 2.2rem; color: var(--brand-navy); margin-bottom: 1rem;"></i>
+        <h3 class="card-title">1. Smart Idea Generator</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Generates multiple practical, feasible project candidates tailored to your specific domain, skills, and time constraints.</p>
+      </div>
+
+      <div class="card">
+        <i class="bi bi-code-square" style="font-size: 2.2rem; color: var(--brand-teal); margin-bottom: 1rem;"></i>
+        <h3 class="card-title">2. Python AST Analyzer</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Inspects your actual imported codebase to compare planned blueprint modules against implemented Flask routes & DB models.</p>
+      </div>
+
+      <div class="card">
+        <i class="bi bi-journal-check" style="font-size: 2.2rem; color: var(--accent-success); margin-bottom: 1rem;"></i>
+        <h3 class="card-title">3. Verified Documentation</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Generates SRS, README, presentation slide decks, and resume bullet points grounded strictly in empirical code analysis.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

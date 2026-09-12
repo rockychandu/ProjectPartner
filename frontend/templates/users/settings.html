@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block header_title %}Account & Platform Settings{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-gear-fill"></i> System Preferences & Account Settings</span>
+    <span class="badge badge-info"><i class="bi bi-wifi-off"></i> Offline Mode Active</span>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;"><i class="bi bi-person-badge"></i> Student Account Details</h3>
+      <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.9rem;">
+        <div style="margin-bottom: 0.75rem;"><strong>Name:</strong> {{ current_user.name }}</div>
+        <div style="margin-bottom: 0.75rem;"><strong>Email:</strong> {{ current_user.email }}</div>
+        <div style="margin-bottom: 0.75rem;"><strong>College:</strong> {{ current_user.college or 'State Institute of Technology' }}</div>
+        <div style="margin-bottom: 0.75rem;"><strong>Branch:</strong> {{ current_user.branch or 'Computer Science' }}</div>
+        <div><strong>Academic Year:</strong> {{ current_user.year or '3rd Year' }}</div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;"><i class="bi bi-shield-lock-fill"></i> Offline Constraints & Security Settings</h3>
+      <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span>External Cloud API Calls:</span>
+          <span class="badge badge-success">DISABLED (0 API Dependency)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span>Local NLP Scikit-Learn Engine:</span>
+          <span class="badge badge-success">ACTIVE (TF-IDF Vectorizer)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span>Python AST Code Parser:</span>
+          <span class="badge badge-success">ENABLED</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Database Engine:</span>
+          <span class="badge badge-info">SQLite / SQLAlchemy ORM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

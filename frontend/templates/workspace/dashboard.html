@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Development Workspace{% endblock %}
+{% block header_title %}Student Development Workspace Dashboard{% endblock %}
+
+{% block content %}
+<!-- Warm Personal Greeting Banner -->
+<div style="background: linear-gradient(135deg, rgba(20, 57, 101, 0.06), rgba(23, 137, 155, 0.08)); padding: 1.5rem 1.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+  <div>
+    <h2 style="font-size: 1.5rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 0.25rem;">
+      Welcome back, {{ current_user.name }}! 👋
+    </h2>
+    <p style="font-size: 0.92rem; color: var(--text-secondary); font-weight: 500;">
+      Ready to continue building your student-owned engineering project?
+    </p>
+  </div>
+  <div>
+    <a href="{{ url_for('projects.generator') }}" class="btn btn-primary">
+      <i class="bi bi-lightbulb-fill"></i> Discover New Idea
+    </a>
+  </div>
+</div>
+
+<!-- Main Dashboard Platform Hero Section -->
+<div class="card" style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-top: 5px solid var(--brand-navy); margin-bottom: 1.75rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+    <div>
+      <span class="badge badge-teal" style="margin-bottom: 0.5rem;"><i class="bi bi-person-heart"></i> Humanized Student Guidance</span>
+      <h2 style="font-size: 1.6rem; font-weight: 900; color: var(--brand-navy);">
+        Student Project Discovery, Planning & Guidance Platform
+      </h2>
+      <p style="font-size: 0.92rem; color: var(--text-secondary); margin-top: 0.25rem;">
+        Turn practical ideas into humanized engineering projects with offline TF-IDF recommendations, AST code analysis, dependency-aware task graphs, and verified SRS documentation.
+      </p>
+    </div>
+    <div>
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ProjectPartner Logo" style="height: 58px; width: auto; object-fit: contain;">
+    </div>
+  </div>
+
+  <div style="background: #ffffff; padding: 1rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+    <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--brand-navy); font-weight: 900; margin-bottom: 0.5rem;">Complete Student Project Lifecycle</div>
+    <div style="font-size: 0.85rem; font-weight: 800; color: var(--brand-teal); display: flex; flex-wrap: wrap; gap: 0.75rem;">
+      <span>IDEA</span> ➔ <span>SELECTION</span> ➔ <span>BLUEPRINT</span> ➔ <span>TEAM</span> ➔ <span>TASKS</span> ➔ <span>ROADMAP</span> ➔ <span>DEVELOPMENT</span> ➔ <span>DOCUMENTATION</span>
+    </div>
+  </div>
+</div>
+
+{% if active_project %}
+<div class="card" style="border-top: 4px solid var(--brand-teal);">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <span class="badge badge-info">{{ active_project.domain }}</span>
+      <span class="badge badge-teal">{{ active_project.status }} Phase</span>
+      <h2 style="font-size: 1.55rem; color: var(--brand-navy); margin: 0.5rem 0; font-weight: 900;">{{ active_project.title }}</h2>
+    </div>
+    <div style="text-align: right; width: 220px;">
+      <div style="font-size: 0.8rem; color: var(--brand-navy); margin-bottom: 0.25rem; font-weight: 800;">Implementation Progress</div>
+      <div class="progress-bar-bg" style="margin-bottom: 0.35rem;">
+        <div class="progress-bar-fill" style="width: {{ active_project.progress_percentage or 0 }}%;"></div>
+      </div>
+      <div style="font-size: 1.15rem; font-weight: 900; color: var(--brand-teal);">{{ active_project.progress_percentage or 0 }}%</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">
+      <span><i class="bi bi-compass-fill" style="color: var(--brand-navy);"></i> Development Guidance</span>
+      <span class="badge badge-info">AST Project-Specific</span>
+    </div>
+
+    <div style="background: var(--bg-card-subtle); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
+      <div style="font-size: 0.78rem; color: var(--brand-navy); text-transform: uppercase; font-weight: 900;">Recommended Next Step</div>
+      <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 0.35rem;">
+        {{ guidance.recommended_next_step or 'Run the Project Analyzer to compare actual source code against the blueprint.' }}
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.92rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: var(--text-primary); font-weight: 600;">Authentication Module:</span>
+        {% if guidance.has_auth %}
+        <span class="badge badge-success"><i class="bi bi-check-lg"></i> Detected</span>
+        {% else %}
+        <span class="badge badge-danger"><i class="bi bi-x-lg"></i> Not Detected</span>
+        {% endif %}
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: var(--text-primary); font-weight: 600;">Relational Database:</span>
+        {% if guidance.has_database %}
+        <span class="badge badge-success"><i class="bi bi-check-lg"></i> Detected</span>
+        {% else %}
+        <span class="badge badge-danger"><i class="bi bi-x-lg"></i> Not Detected</span>
+        {% endif %}
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: var(--text-primary); font-weight: 600;">Flask Application Routes:</span>
+        {% if guidance.has_auth or guidance.has_database %}
+        <span class="badge badge-success"><i class="bi bi-check-lg"></i> Detected</span>
+        {% else %}
+        <span class="badge badge-warning"><i class="bi bi-exclamation-triangle"></i> Pending</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      <a href="{{ url_for('analyzer.view_analyzer', project_id=active_project.id) }}" class="btn btn-primary" style="width: 100%;">
+        <i class="bi bi-code-slash"></i> Import & Analyze Code Folder
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span><i class="bi bi-lightning-charge-fill" style="color: var(--brand-teal);"></i> Quick Action Tools</span>
+    </div>
+
+    <div class="grid-2" style="gap: 0.85rem;">
+      <a href="{{ url_for('mentor.chat', project_id=active_project.id) }}" class="btn btn-secondary" style="padding: 1rem; flex-direction: column; align-items: flex-start; text-align: left;">
+        <i class="bi bi-robot" style="font-size: 1.6rem; color: var(--brand-navy);"></i>
+        <span style="font-weight: 800; color: var(--brand-navy); margin-top: 0.5rem;">Project Mentor</span>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">Ask project-aware questions</span>
+      </a>
+
+      <a href="{{ url_for('documentation.view_documentation', project_id=active_project.id) }}" class="btn btn-secondary" style="padding: 1rem; flex-direction: column; align-items: flex-start; text-align: left;">
+        <i class="bi bi-journal-text" style="font-size: 1.6rem; color: var(--brand-teal);"></i>
+        <span style="font-weight: 800; color: var(--brand-navy); margin-top: 0.5rem;">Documentation</span>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">Generate SRS & Download PDF</span>
+      </a>
+
+      <a href="{{ url_for('documentation.download_documentation', project_id=active_project.id, doc_type='pdf') }}" class="btn btn-secondary" style="padding: 1rem; flex-direction: column; align-items: flex-start; text-align: left;">
+        <i class="bi bi-file-earmark-pdf-fill" style="font-size: 1.6rem; color: var(--accent-danger);"></i>
+        <span style="font-weight: 800; color: var(--brand-navy); margin-top: 0.5rem;">Download PDF Report</span>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">User & Project Details PDF</span>
+      </a>
+
+      <a href="{{ url_for('blueprint.view_blueprint', project_id=active_project.id) }}" class="btn btn-secondary" style="padding: 1rem; flex-direction: column; align-items: flex-start; text-align: left;">
+        <i class="bi bi-file-earmark-code" style="font-size: 1.6rem; color: var(--brand-navy);"></i>
+        <span style="font-weight: 800; color: var(--brand-navy); margin-top: 0.5rem;">Project Blueprint</span>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">View full architecture specs</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-clock-history"></i> Recent Activity Logs</span>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Details</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td><strong style="color: var(--brand-navy);">{{ log.action }}</strong></td>
+        <td style="color: var(--text-primary); font-weight: 500;">{{ log.details }}</td>
+        <td style="color: var(--text-muted); font-size: 0.8rem;">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align: center; padding: 4rem 2rem;">
+  <i class="bi bi-folder-x" style="font-size: 3.5rem; color: var(--brand-navy);"></i>
+  <h2 style="color: var(--brand-navy); margin-top: 1rem; font-weight: 900;">No project selected yet.</h2>
+  <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem;">Start by generating project ideas tailored to your student profile.</p>
+  <a href="{{ url_for('projects.generator') }}" class="btn btn-primary" style="padding: 0.9rem 2.25rem;"><i class="bi bi-lightbulb-fill"></i> Launch Idea Generator</a>
+</div>
+{% endif %}
+{% endblock %}

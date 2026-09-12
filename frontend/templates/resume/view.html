@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Entry Generator{% endblock %}
+{% block header_title %}Fact-Verified Resume Bullet Point Generator{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-file-person-fill"></i> Resume Description: {{ project.title }}</span>
+    <form method="POST" action="{{ url_for('resume.view_resume', project_id=project.id) }}">
+      <button type="submit" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+        <i class="bi bi-arrow-repeat"></i> Regenerate Resume Entries
+      </button>
+    </form>
+  </div>
+
+  <div style="background: var(--bg-main); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+    <span class="badge badge-success" style="margin-bottom: 0.5rem;"><i class="bi bi-shield-check"></i> Verifiable Claims Only</span>
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">Bullet points are generated directly from verified codebase routes, database models, and AST code artifacts.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    {% for entry in entries %}
+    <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border-left: 4px solid var(--accent-success);">
+      <span class="badge badge-info" style="margin-bottom: 0.35rem;">{{ entry.category }}</span>
+      <div style="color: white; font-size: 0.95rem; margin-top: 0.25rem;">
+        • {{ entry.bullet_point|safe }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ProjectPartner{% endblock %} - Student Project Discovery & Planning Platform</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+  <!-- 2-Second Splash Screen Intro -->
+  <div id="splash-screen">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ProjectPartner Logo" class="splash-logo">
+    <div style="font-size: 0.95rem; font-weight: 800; color: var(--brand-navy); margin-top: 1rem; letter-spacing: -0.01em;">
+      Student Project Discovery, Planning & Guidance Platform
+    </div>
+    <div class="splash-loader">
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+
+  <div class="app-container">
+    {% if current_user.is_authenticated %}
+    <aside class="sidebar">
+      <div class="brand" style="justify-content: center; text-align: center;">
+        <a href="{{ url_for('workspace.dashboard') }}">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ProjectPartner Logo">
+        </a>
+      </div>
+
+      <div class="nav-section-title">Discovery & Planning</div>
+      <ul class="nav-menu">
+        <li><a href="{{ url_for('workspace.dashboard') }}" class="nav-link"><i class="bi bi-speedometer2"></i> Workspace Dashboard</a></li>
+        <li><a href="{{ url_for('users.profile') }}" class="nav-link"><i class="bi bi-person-gear"></i> Student Profile & Skills</a></li>
+        <li><a href="{{ url_for('projects.generator') }}" class="nav-link"><i class="bi bi-lightbulb-fill"></i> Smart Idea Generator</a></li>
+        <li><a href="{{ url_for('projects.compare') }}" class="nav-link"><i class="bi bi-layout-split"></i> Project Comparison</a></li>
+        <li><a href="{{ url_for('users.settings') }}" class="nav-link"><i class="bi bi-gear-fill"></i> Platform Settings</a></li>
+      </ul>
+
+      {% if active_project or (current_user.projects and current_user.projects|length > 0) %}
+      {% set proj = active_project if active_project else current_user.projects[0] %}
+      <div class="nav-section-title">Active Project Lifecycle</div>
+      <ul class="nav-menu">
+        <li><a href="{{ url_for('projects.details', project_id=proj.id) }}" class="nav-link"><i class="bi bi-info-circle-fill"></i> Overview</a></li>
+        <li><a href="{{ url_for('blueprint.view_blueprint', project_id=proj.id) }}" class="nav-link"><i class="bi bi-file-earmark-code"></i> Project Blueprint</a></li>
+        <li><a href="{{ url_for('teams.manage_team', project_id=proj.id) }}" class="nav-link"><i class="bi bi-people-fill"></i> Team & Roles</a></li>
+        <li><a href="{{ url_for('tasks.view_tasks', project_id=proj.id) }}" class="nav-link"><i class="bi bi-kanban"></i> Task Distribution</a></li>
+        <li><a href="{{ url_for('roadmap.view_roadmap', project_id=proj.id) }}" class="nav-link"><i class="bi bi-calendar3"></i> Development Roadmap</a></li>
+        <li><a href="{{ url_for('analyzer.view_analyzer', project_id=proj.id) }}" class="nav-link"><i class="bi bi-code-slash"></i> Project Analyzer</a></li>
+        <li><a href="{{ url_for('mentor.chat', project_id=proj.id) }}" class="nav-link"><i class="bi bi-robot"></i> Project Mentor</a></li>
+        <li><a href="{{ url_for('documentation.view_documentation', project_id=proj.id) }}" class="nav-link"><i class="bi bi-journal-text"></i> Documentation (SRS & PDF)</a></li>
+      </ul>
+      {% endif %}
+
+      <div class="sidebar-footer">
+        <a href="{{ url_for('auth.logout') }}" onclick="sessionStorage.setItem('trigger_splash', '1');" class="nav-link" style="color: var(--accent-danger);"><i class="bi bi-box-arrow-right"></i> Sign Out</a>
+      </div>
+    </aside>
+    {% endif %}
+
+    <main class="main-content" style="{% if not current_user.is_authenticated %}margin-left: 0; padding: 0;{% endif %}">
+      {% if current_user.is_authenticated %}
+      <div class="top-bar">
+        <div>
+          <h1 class="page-title">{% block header_title %}Dashboard{% endblock %}</h1>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 700;">
+            IDEA ➔ SELECTION ➔ BLUEPRINT ➔ TEAM ➔ TASKS ➔ ROADMAP ➔ DEVELOPMENT ➔ DOCUMENTATION
+          </div>
+        </div>
+
+        <!-- Interactive Profile Badge & Dropdown Menu -->
+        <div class="user-profile-wrapper">
+          <div class="user-profile-badge" onclick="toggleProfileDropdown()">
+            <div class="avatar">{{ current_user.name[0].upper() }}</div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.92rem; color: var(--brand-navy);">{{ current_user.name }}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">{{ current_user.college or 'Student Engineer' }} <i class="bi bi-chevron-down" style="font-size: 0.7rem;"></i></div>
+            </div>
+          </div>
+
+          <div id="profile-dropdown-menu" class="profile-dropdown-menu">
+            <div class="dropdown-header">
+              <div style="font-weight: 800; font-size: 0.9rem; color: var(--brand-navy);">{{ current_user.name }}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">{{ current_user.email }}</div>
+            </div>
+            <a href="{{ url_for('users.profile') }}" class="dropdown-item">
+              <i class="bi bi-person-gear" style="color: var(--brand-teal);"></i> View Profile & Skills
+            </a>
+            <a href="{{ url_for('users.settings') }}" class="dropdown-item">
+              <i class="bi bi-gear-fill" style="color: var(--brand-navy);"></i> Platform Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="{{ url_for('auth.logout') }}" onclick="sessionStorage.setItem('trigger_splash', '1');" class="dropdown-item" style="color: var(--accent-danger);">
+              <i class="bi bi-box-arrow-right" style="color: var(--accent-danger);"></i> Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      const splash = document.getElementById('splash-screen');
+      if (!splash) return;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const isSplashParam = urlParams.has('splash');
+      
+      // Check page refresh
+      const perfEntries = performance.getEntriesByType && performance.getEntriesByType("navigation");
+      const isReload = (perfEntries && perfEntries.length > 0 && perfEntries[0].type === "reload") ||
+                       (performance.navigation && performance.navigation.type === 1);
+
+      // Check initial link open in browser session
+      const isInitialOpen = !sessionStorage.getItem('pp_session_opened');
+
+      // Check manual trigger stored in sessionStorage (e.g. signout click)
+      const isManualTrigger = sessionStorage.getItem('trigger_splash') === '1';
+      if (isManualTrigger) {
+        sessionStorage.removeItem('trigger_splash');
+      }
+
+      if (isInitialOpen) {
+        sessionStorage.setItem('pp_session_opened', '1');
+      }
+
+      if (isInitialOpen || isReload || isSplashParam || isManualTrigger) {
+        splash.style.display = 'flex';
+        setTimeout(() => {
+          splash.classList.add('fade-out');
+          setTimeout(() => { splash.style.display = 'none'; }, 500);
+        }, 2000);
+      } else {
+        splash.style.display = 'none';
+      }
+    })();
+
+    // Profile Dropdown Toggle
+    function toggleProfileDropdown() {
+      const menu = document.getElementById('profile-dropdown-menu');
+      if (menu) {
+        menu.classList.toggle('show');
+      }
+    }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+      const wrapper = document.querySelector('.user-profile-wrapper');
+      const menu = document.getElementById('profile-dropdown-menu');
+      if (wrapper && menu && !wrapper.contains(e.target)) {
+        menu.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>

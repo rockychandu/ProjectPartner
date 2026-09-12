@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Project Details - {{ project.title }}{% endblock %}
+{% block header_title %}Project Details & Overview{% endblock %}
+
+{% block content %}
+<div class="card" style="border-top: 4px solid var(--accent-primary);">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <span class="badge badge-info">{{ project.domain }}</span>
+      <span class="badge badge-success">{{ project.status }} Phase</span>
+      <h2 style="font-size: 1.6rem; color: white; margin: 0.5rem 0;">{{ project.title }}</h2>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        Created on {{ project.created_at.strftime('%B %d, %Y') if project.created_at else 'Recently' }}
+      </p>
+    </div>
+    <div style="text-align: right;">
+      <a href="{{ url_for('blueprint.view_blueprint', project_id=project.id) }}" class="btn btn-primary">
+        <i class="bi bi-file-earmark-code"></i> View Blueprint
+      </a>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top: 1rem;">
+    <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <h3 style="color: var(--accent-primary); font-size: 1.05rem; margin-bottom: 0.5rem;"><i class="bi bi-info-circle-fill"></i> Core Problem</h3>
+      <p style="font-size: 0.9rem; color: var(--text-primary);">{{ idea.problem if idea else 'Domain-specific problem statement.' }}</p>
+    </div>
+
+    <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <h3 style="color: var(--accent-success); font-size: 1.05rem; margin-bottom: 0.5rem;"><i class="bi bi-lightbulb-fill"></i> Technical Solution</h3>
+      <p style="font-size: 0.9rem; color: var(--text-primary);">{{ idea.solution if idea else 'Structured offline software solution.' }}</p>
+    </div>
+  </div>
+
+  <hr style="border-color: var(--border-color); margin: 1.5rem 0;">
+
+  <div class="grid-3">
+    <div>
+      <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Difficulty</h4>
+      <div style="font-size: 1.1rem; color: white; font-weight: 700;">{{ idea.difficulty if idea else 'Intermediate' }}</div>
+    </div>
+    <div>
+      <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Estimated Duration</h4>
+      <div style="font-size: 1.1rem; color: white; font-weight: 700;">{{ idea.estimated_duration_weeks if idea else 8 }} Weeks</div>
+    </div>
+    <div>
+      <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Team Size</h4>
+      <div style="font-size: 1.1rem; color: white; font-weight: 700;">{{ idea.team_size if idea else 3 }} Members</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+    <a href="{{ url_for('teams.manage_team', project_id=project.id) }}" class="btn btn-secondary"><i class="bi bi-people"></i> Manage Team</a>
+    <a href="{{ url_for('tasks.view_tasks', project_id=project.id) }}" class="btn btn-secondary"><i class="bi bi-kanban"></i> Tasks Board</a>
+    <a href="{{ url_for('analyzer.view_analyzer', project_id=project.id) }}" class="btn btn-secondary"><i class="bi bi-code-slash"></i> Project Analyzer</a>
+    <a href="{{ url_for('mentor.chat', project_id=project.id) }}" class="btn btn-secondary"><i class="bi bi-robot"></i> Project Mentor</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Project Analyzer{% endblock %}
+{% block header_title %}Python AST Project Analyzer & Blueprint Comparator{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-code-slash" style="color: var(--brand-teal);"></i> Import & Analyze Codebase for: {{ project.title }}</span>
+    <span class="badge badge-info">AST Static Analysis</span>
+  </div>
+
+  <form method="POST" action="{{ url_for('analyzer.view_analyzer', project_id=project.id) }}" enctype="multipart/form-data">
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Option A: Upload Project (.zip archive)</label>
+        <input type="file" name="project_zip" class="form-control" accept=".zip">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Option B: Specify Local Project Directory Path</label>
+        <input type="text" name="project_path" class="form-control" placeholder="c:\Users\HP\Projects\MyProject">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-search"></i> Run AST Analyzer & Blueprint Comparison
+    </button>
+  </form>
+</div>
+
+{% if analysis %}
+<div class="card" style="border-top: 5px solid var(--accent-success);">
+  <div class="card-title">
+    <span><i class="bi bi-layout-split" style="color: var(--brand-navy);"></i> Blueprint vs. Actual Codebase Comparison</span>
+    <span class="badge badge-success">Overall Implementation: {{ guidance.progress_percentage or 0 }}%</span>
+  </div>
+
+  <div style="background: var(--bg-card-subtle); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+    <h4 style="font-size: 0.8rem; color: var(--brand-navy); text-transform: uppercase; font-weight: 800;">Recommended Next Step:</h4>
+    <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+      {{ guidance.recommended_next_step }}
+    </div>
+  </div>
+
+  <h3 style="color: var(--brand-navy); font-size: 1.1rem; margin-bottom: 1rem; font-weight: 800;">Module Implementation Status Scorecard</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Planned Blueprint Module</th>
+        <th>Status</th>
+        <th>Confidence Level</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in comparison %}
+      <tr>
+        <td><strong style="color: var(--brand-navy);">{{ item.module_name }}</strong></td>
+        <td>
+          <span class="badge {% if item.status == 'Completed' %}badge-success{% elif item.status == 'In Progress' %}badge-warning{% else %}badge-danger{% endif %}">
+            {{ item.status }}
+          </span>
+        </td>
+        <td><span class="badge badge-info" style="font-size: 0.75rem;">{{ item.confidence }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+  <div class="grid-2">
+    <div>
+      <h3 style="color: var(--brand-navy); font-size: 1.05rem; margin-bottom: 0.75rem; font-weight: 800;"><i class="bi bi-files"></i> Detected Code Artifacts</h3>
+      <ul style="list-style: none; padding: 0; font-size: 0.85rem; color: var(--text-secondary);">
+        <li><strong>Languages:</strong> {{ ", ".join(languages) }}</li>
+        <li><strong>Frameworks:</strong> {{ ", ".join(frameworks) }}</li>
+        <li><strong>Files Detected:</strong> {{ files|length }} files</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="color: var(--brand-navy); font-size: 1.05rem; margin-bottom: 0.75rem; font-weight: 800;"><i class="bi bi-signpost-split-fill"></i> AST Detected Routes & Models</h3>
+      <ul style="list-style: none; padding: 0; font-size: 0.85rem; color: var(--text-secondary);">
+        <li><strong>Flask Routes Detected:</strong> {{ routes|length }} routes</li>
+        <li><strong>SQLAlchemy Models:</strong> {{ models|length }} models</li>
+        <li><strong>Pytest Unit Tests:</strong> {{ tests|length }} functions</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

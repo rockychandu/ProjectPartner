@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Project Comparison{% endblock %}
+{% block header_title %}Side-by-Side Project Idea Comparison Matrix{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-layout-split"></i> Side-by-Side Project Candidate Comparison</span>
+    <span class="badge badge-info">Multi-Factor Evaluation Matrix</span>
+  </div>
+
+  {% if ideas and ideas|length >= 2 %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Metric / Feature</th>
+        <th style="color: var(--accent-primary);">{{ ideas[0].title }}</th>
+        <th style="color: var(--accent-success);">{{ ideas[1].title }}</th>
+        {% if ideas|length >= 3 %}
+        <th style="color: var(--accent-warning);">{{ ideas[2].title }}</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Domain</strong></td>
+        <td>{{ ideas[0].domain }}</td>
+        <td>{{ ideas[1].domain }}</td>
+        {% if ideas|length >= 3 %}<td>{{ ideas[2].domain }}</td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Difficulty Level</strong></td>
+        <td><span class="badge badge-info">{{ ideas[0].difficulty }}</span></td>
+        <td><span class="badge badge-info">{{ ideas[1].difficulty }}</span></td>
+        {% if ideas|length >= 3 %}<td><span class="badge badge-info">{{ ideas[2].difficulty }}</span></td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Duration (Weeks)</strong></td>
+        <td>{{ ideas[0].estimated_duration_weeks }} Weeks</td>
+        <td>{{ ideas[1].estimated_duration_weeks }} Weeks</td>
+        {% if ideas|length >= 3 %}<td>{{ ideas[2].estimated_duration_weeks }} Weeks</td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Team Size</strong></td>
+        <td>{{ ideas[0].team_size }} Members</td>
+        <td>{{ ideas[1].team_size }} Members</td>
+        {% if ideas|length >= 3 %}<td>{{ ideas[2].team_size }} Members</td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Technology Stack</strong></td>
+        <td>{{ ideas[0].technology_stack if ideas[0].technology_stack is string else ", ".join(ideas[0].get_tech_stack()) }}</td>
+        <td>{{ ideas[1].technology_stack if ideas[1].technology_stack is string else ", ".join(ideas[1].get_tech_stack()) }}</td>
+        {% if ideas|length >= 3 %}<td>{{ ideas[2].technology_stack if ideas[2].technology_stack is string else ", ".join(ideas[2].get_tech_stack()) }}</td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Dataset Required</strong></td>
+        <td>{{ ideas[0].dataset_required or 'None' }}</td>
+        <td>{{ ideas[1].dataset_required or 'None' }}</td>
+        {% if ideas|length >= 3 %}<td>{{ ideas[2].dataset_required or 'None' }}</td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Cloud API Dependency</strong></td>
+        <td>{% if ideas[0].api_required %}<span class="badge badge-warning">Required</span>{% else %}<span class="badge badge-success">Offline</span>{% endif %}</td>
+        <td>{% if ideas[1].api_required %}<span class="badge badge-warning">Required</span>{% else %}<span class="badge badge-success">Offline</span>{% endif %}</td>
+        {% if ideas|length >= 3 %}<td>{% if ideas[2].api_required %}<span class="badge badge-warning">Required</span>{% else %}<span class="badge badge-success">Offline</span>{% endif %}</td>{% endif %}
+      </tr>
+      <tr>
+        <td><strong>Select Candidate</strong></td>
+        <td>
+          <form method="POST" action="{{ url_for('projects.select_project', idea_id=ideas[0].id) }}">
+            <button type="submit" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Select Project 1</button>
+          </form>
+        </td>
+        <td>
+          <form method="POST" action="{{ url_for('projects.select_project', idea_id=ideas[1].id) }}">
+            <button type="submit" class="btn btn-success" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Select Project 2</button>
+          </form>
+        </td>
+        {% if ideas|length >= 3 %}
+        <td>
+          <form method="POST" action="{{ url_for('projects.select_project', idea_id=ideas[2].id) }}">
+            <button type="submit" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Select Project 3</button>
+          </form>
+        </td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+  {% else %}
+  <div style="text-align: center; padding: 3rem 1rem;">
+    <i class="bi bi-diagram-2" style="font-size: 2.5rem; color: var(--text-muted);"></i>
+    <h3 style="color: white; margin-top: 1rem;">Generate project candidates first to compare.</h3>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">The comparison matrix automatically loads generated ideas from the Idea Generator.</p>
+    <a href="{{ url_for('projects.generator') }}" class="btn btn-primary"><i class="bi bi-sliders"></i> Launch Generator</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

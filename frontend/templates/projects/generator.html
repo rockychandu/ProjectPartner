@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Idea Generator{% endblock %}
+{% block header_title %}Smart Project Idea Generator{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-sliders" style="color: var(--brand-teal);"></i> Configure Project Requirements</span>
+    <span class="badge badge-success"><i class="bi bi-wifi-off"></i> Local Rule Engine</span>
+  </div>
+
+  <form method="POST" action="{{ url_for('projects.generator') }}">
+    <div class="grid-3">
+      <div class="form-group">
+        <label class="form-label">Domain Area</label>
+        <select name="domain" class="form-control">
+          <option value="All">All Domains</option>
+          <option value="Agriculture">Agriculture</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Education">Education</option>
+          <option value="Finance & FinTech">Finance & FinTech</option>
+          <option value="Cybersecurity">Cybersecurity</option>
+          <option value="Transportation & Logistics">Transportation & Logistics</option>
+          <option value="IoT & Smart Systems">IoT & Smart Systems</option>
+          <option value="E-Commerce & Retail">E-Commerce & Retail</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Target Technology Stack</label>
+        <select name="technology" class="form-control">
+          <option value="All">All Technologies</option>
+          <option value="Python + Flask Web Stack">Python + Flask Web Stack</option>
+          <option value="Python + Computer Vision">Python + Computer Vision</option>
+          <option value="Python + Scikit-Learn">Python + Scikit-Learn ML</option>
+          <option value="Python AST & Local NLP">Python AST & Local NLP</option>
+          <option value="JavaScript + Node.js / Express">JavaScript + Express</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Project Difficulty</label>
+        <select name="difficulty" class="form-control">
+          <option value="All">Any Difficulty</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate" selected>Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <!-- Flexible Duration (Hours, Days, Weeks, Months) -->
+      <div class="form-group">
+        <label class="form-label">Target Duration</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="number" name="duration_value" class="form-control" value="8" min="1" max="1000" style="flex: 1.5;" required>
+          <select name="duration_unit" class="form-control" style="flex: 1;">
+            <option value="Hours">Hours</option>
+            <option value="Days">Days</option>
+            <option value="Weeks" selected>Weeks</option>
+            <option value="Months">Months</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Target Team Size</label>
+        <input type="number" name="team_size" class="form-control" value="3" min="1" max="6">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Hardware Requirement</label>
+        <select name="hardware" class="form-control">
+          <option value="Not Required" selected>Not Required (Standard PC)</option>
+          <option value="Optional">Optional (Camera / GPU)</option>
+          <option value="Microcontroller">Microcontroller / Sensors</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">API Dependency Constraint</label>
+        <select name="api_allowed" class="form-control">
+          <option value="false" selected>Not Allowed (Mandatory Offline Engine)</option>
+          <option value="true">Allowed (Cloud API Allowed)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Budget Constraint</label>
+        <input type="text" name="budget" class="form-control" value="$0 (Free / Open-Source Tools Only)">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="padding: 0.85rem 2rem;">
+      <i class="bi bi-cpu-fill"></i> Generate Compatible Project Candidates
+    </button>
+  </form>
+</div>
+{% endblock %}

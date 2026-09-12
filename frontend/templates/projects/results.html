@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Generated Ideas & Ranking{% endblock %}
+{% block header_title %}Generated Project Candidates & TF-IDF Recommendation Scorecards{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+  <div>
+    <h2 style="color: var(--brand-navy); font-size: 1.4rem; font-weight: 800;">Found {{ results|length }} Feasible Project Candidates</h2>
+    <p style="font-size: 0.85rem; color: var(--text-muted);">Ranked based on your student profile skills, technology match, and difficulty constraints.</p>
+  </div>
+  <a href="{{ url_for('projects.generator') }}" class="btn btn-secondary"><i class="bi bi-sliders"></i> Modify Filters</a>
+</div>
+
+{% for item in results %}
+{% set proj = item.project %}
+<div class="card" style="border-left: 5px solid var(--brand-navy);">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+    <div>
+      <span class="badge badge-info">{{ proj.domain }}</span>
+      <span class="badge badge-success">{{ proj.difficulty }}</span>
+      <span class="badge badge-warning">{{ proj.get_formatted_duration() if proj.get_formatted_duration is defined else (proj.estimated_duration_weeks ~ ' Weeks') }}</span>
+      <span class="badge badge-teal">Team Size: {{ proj.team_size }}</span>
+      <h3 style="font-size: 1.4rem; color: var(--brand-navy); margin: 0.6rem 0; font-weight: 800;">{{ proj.title }}</h3>
+    </div>
+    <div style="text-align: right; background: var(--bg-card-subtle); padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Overall Match</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: var(--brand-teal);">{{ item.overall_match }}%</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top: 1.25rem;">
+    <div>
+      <h4 style="color: var(--brand-navy); font-size: 0.95rem; margin-bottom: 0.35rem; font-weight: 700;"><i class="bi bi-exclamation-triangle-fill" style="color: var(--accent-warning);"></i> Real Problem</h4>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">{{ proj.problem }}</p>
+
+      <h4 style="color: var(--brand-navy); font-size: 0.95rem; margin-bottom: 0.35rem; font-weight: 700;"><i class="bi bi-lightbulb-fill" style="color: var(--brand-teal);"></i> Proposed Solution</h4>
+      <p style="font-size: 0.9rem; color: var(--text-secondary);">{{ proj.solution }}</p>
+    </div>
+
+    <div style="background: var(--bg-card-subtle); padding: 1.1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <h4 style="color: var(--brand-navy); font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 800;"><i class="bi bi-bar-chart-fill" style="color: var(--brand-teal);"></i> Match Score Breakdown</h4>
+      {% set bd = item.breakdown %}
+      <div style="font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.45rem;">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-secondary);">Skill Match:</span> <strong style="color: var(--brand-navy);">{{ bd.skill_match or 95 }}%</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-secondary);">Technology Match:</span> <strong style="color: var(--brand-navy);">{{ bd.technology_match or 90 }}%</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-secondary);">Difficulty Fit:</span> <strong style="color: var(--brand-navy);">{{ bd.difficulty_match or 85 }}%</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-secondary);">Feasibility Index:</span> <strong style="color: var(--brand-navy);">{{ bd.feasibility or 90 }}%</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <span style="font-size: 0.85rem; color: var(--text-muted); margin-right: 1rem;">
+        <i class="bi bi-layers-fill" style="color: var(--brand-teal);"></i> Tech: {{ proj.technology_stack if proj.technology_stack is string else ", ".join(proj.get_tech_stack()) }}
+      </span>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">
+        <i class="bi bi-wifi-off" style="color: var(--accent-success);"></i> Cloud API: {% if proj.api_required %}Required{% else %}Not Required (Offline){% endif %}
+      </span>
+    </div>
+
+    <form method="POST" action="{{ url_for('projects.select_project', idea_id=proj.id) }}">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle-fill"></i> Select Project & Create Blueprint
+      </button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

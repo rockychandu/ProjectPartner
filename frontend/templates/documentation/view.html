@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Documentation Generator{% endblock %}
+{% block header_title %}Fact-Verified Documentation & PDF Exporter{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-journal-text"></i> Project Documentation Hub: {{ project.title }}</span>
+    <form method="POST" action="{{ url_for('documentation.view_documentation', project_id=project.id) }}" style="display: inline;">
+      <button type="submit" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+        <i class="bi bi-arrow-repeat"></i> Regenerate Docs
+      </button>
+    </form>
+  </div>
+
+  <!-- Type 2: PDF Document Banner & Download Section -->
+  <div style="background: linear-gradient(135deg, rgba(20, 57, 101, 0.05), rgba(23, 137, 155, 0.08)); padding: 1.5rem; border-radius: var(--radius-md); border: 1.5px solid var(--brand-teal); margin-bottom: 1.75rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span class="badge badge-teal" style="margin-bottom: 0.5rem;"><i class="bi bi-file-earmark-pdf-fill"></i> TYPE 2: Official PDF Specification Report</span>
+        <h3 style="color: var(--brand-navy); font-size: 1.25rem; font-weight: 900; margin-bottom: 0.35rem;">
+          Generate & Download PDF Project Report
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 680px;">
+          Includes complete <strong>Student User Details</strong> (Name, Email, College, Branch, Year), <strong>Project Problem Statement</strong>, <strong>Project Abstract</strong>, and <strong>Technical Architecture Specifications</strong> formatted in a publication-ready PDF layout.
+        </p>
+      </div>
+      <div>
+        <a href="{{ url_for('documentation.download_documentation', project_id=project.id, doc_type='pdf') }}" class="btn btn-primary" style="padding: 0.75rem 1.4rem; font-size: 0.92rem; background: var(--brand-navy); border-color: var(--brand-navy);">
+          <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF Document (.pdf)
+        </a>
+      </div>
+    </div>
+
+    <!-- PDF Metadata Preview Box -->
+    <div style="background: #ffffff; padding: 1rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-top: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; font-size: 0.85rem;">
+      <div>
+        <strong style="color: var(--brand-navy); display: block; margin-bottom: 0.2rem;">Student Details:</strong>
+        <div>{{ current_user.name }} ({{ current_user.email }})</div>
+        <div style="color: var(--text-muted); font-size: 0.78rem;">{{ current_user.college or 'Student Engineer' }} • {{ current_user.branch or 'CS/IT' }} ({{ current_user.year or '3rd Year' }})</div>
+      </div>
+      <div>
+        <strong style="color: var(--brand-navy); display: block; margin-bottom: 0.2rem;">Project Details:</strong>
+        <div>{{ project.title }}</div>
+        <div style="color: var(--text-muted); font-size: 0.78rem;">Domain: {{ project.domain }} • Lifecycle: {{ project.status }}</div>
+      </div>
+      <div>
+        <strong style="color: var(--brand-navy); display: block; margin-bottom: 0.2rem;">Key PDF Sections Included:</strong>
+        <div style="color: var(--brand-teal); font-weight: 700;">✓ User Info • Problem Statement • Abstract • SRS Overview</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Type 1: Markdown & Structured Text Documentation -->
+  <div style="margin-bottom: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+      <div>
+        <span class="badge badge-info"><i class="bi bi-file-earmark-code"></i> TYPE 1: Markdown & Structured Text Reports</span>
+        <h3 style="color: var(--brand-navy); font-size: 1.2rem; font-weight: 800; margin-top: 0.25rem;">
+          Verified Project Structure Documentation
+        </h3>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="{{ url_for('documentation.download_documentation', project_id=project.id, doc_type='srs') }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          <i class="bi bi-download"></i> Download SRS (.md)
+        </a>
+        <a href="{{ url_for('documentation.download_documentation', project_id=project.id, doc_type='readme') }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          <i class="bi bi-download"></i> Download README (.md)
+        </a>
+        <a href="{{ url_for('documentation.download_documentation', project_id=project.id, doc_type='full_report') }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          <i class="bi bi-download"></i> Download Full Report (.txt)
+        </a>
+      </div>
+    </div>
+
+    <h4 style="color: var(--brand-navy); font-size: 1.05rem; font-weight: 800; margin-bottom: 0.5rem;">1. Project Abstract</h4>
+    <div style="background: var(--bg-card-subtle); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 0.9rem; margin-bottom: 1.5rem; font-weight: 500;">
+      {{ doc.abstract }}
+    </div>
+
+    <h4 style="color: var(--brand-navy); font-size: 1.05rem; font-weight: 800; margin-bottom: 0.5rem;">2. Software Requirements Specification (SRS)</h4>
+    <pre style="background: var(--bg-card-subtle); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--text-primary); font-family: monospace; font-size: 0.85rem; white-space: pre-wrap; margin-bottom: 1.5rem;">{{ doc.srs_content }}</pre>
+
+    <h4 style="color: var(--brand-navy); font-size: 1.05rem; font-weight: 800; margin-bottom: 0.5rem;">3. README.md Documentation & Code Files</h4>
+    <pre style="background: var(--bg-card-subtle); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--brand-navy); font-family: monospace; font-size: 0.85rem; white-space: pre-wrap;">{{ doc.readme_content }}</pre>
+  </div>
+</div>
+{% endblock %}

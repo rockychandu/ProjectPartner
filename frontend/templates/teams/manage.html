@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Team Management{% endblock %}
+{% block header_title %}Team & Smart Role Allocation Engine{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-people-fill"></i> Project Team Roster: {{ team.name }}</span>
+    <span class="badge badge-info">{{ members|length }} Active Members</span>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;">Current Team Members</h3>
+      {% for m in members %}
+      <div style="background: var(--bg-main); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; color: white; font-size: 0.95rem;">{{ m.member_name }}</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Skills: {{ m.skills }}</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge badge-success">{{ m.preferred_role or 'Unassigned' }}</span>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">{{ m.experience }}</div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <form method="POST" action="{{ url_for('teams.manage_team', project_id=project.id) }}" style="margin-top: 1.5rem;">
+        <input type="hidden" name="action" value="allocate_roles">
+        <button type="submit" class="btn btn-success" style="width: 100%;">
+          <i class="bi bi-cpu-fill"></i> Run Smart Role Allocation Algorithm
+        </button>
+      </form>
+    </div>
+
+    <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <h3 style="color: white; font-size: 1.05rem; margin-bottom: 1rem;"><i class="bi bi-person-plus-fill"></i> Add Team Member</h3>
+      
+      <form method="POST" action="{{ url_for('teams.manage_team', project_id=project.id) }}">
+        <input type="hidden" name="action" value="add_member">
+
+        <div class="form-group">
+          <label class="form-label">Member Full Name</label>
+          <input type="text" name="member_name" class="form-control" placeholder="Jane Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Skills (Comma-separated)</label>
+          <input type="text" name="skills" class="form-control" placeholder="Python, OpenCV, HTML, Pytest">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Experience Level</label>
+            <select name="experience" class="form-control">
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate" selected>Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Preferred Role</label>
+            <select name="preferred_role" class="form-control">
+              <option value="Backend Developer">Backend Developer</option>
+              <option value="Frontend Developer">Frontend Developer</option>
+              <option value="ML Engineer">ML Engineer</option>
+              <option value="Database/QA Engineer">Database/QA Engineer</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          <i class="bi bi-plus-circle"></i> Add Team Member
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+    <a href="{{ url_for('tasks.view_tasks', project_id=project.id) }}" class="btn btn-primary">Generate Task Distribution Graph <i class="bi bi-arrow-right"></i></a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Development Roadmap{% endblock %}
+{% block header_title %}Development Roadmap & Milestone Schedule{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-calendar3"></i> {{ roadmap.total_weeks }}-Week Development Timeline</span>
+    <span class="badge badge-success">{{ milestones|length }} Milestones</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+    {% for w in weeks %}
+    <div style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-sm); border-left: 4px solid var(--accent-primary);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="color: white; font-size: 1.05rem;">
+          <span class="badge badge-info" style="margin-right: 0.5rem;">Week {{ w.week }}</span> {{ w.title }}
+        </h3>
+        <span class="badge badge-success">Milestone {{ w.week }}</span>
+      </div>
+
+      <div style="margin-top: 0.75rem;">
+        <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">Deliverables:</h4>
+        <ul style="list-style: none; padding: 0;">
+          {% for del in w.deliverables %}
+          <li style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+            <i class="bi bi-check2-circle" style="color: var(--accent-success);"></i> {{ del }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+    <a href="{{ url_for('workspace.dashboard') }}" class="btn btn-primary">Open Development Workspace <i class="bi bi-arrow-right"></i></a>
+  </div>
+</div>
+{% endblock %}

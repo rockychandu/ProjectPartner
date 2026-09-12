@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Presentation Generator{% endblock %}
+{% block header_title %}Presentation Slide Deck Content Engine{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="bi bi-easel-fill"></i> Slide Deck Preview: {{ project.title }}</span>
+    <span class="badge badge-info">{{ slides|length }} Slides Generated</span>
+  </div>
+
+  <div class="grid-2">
+    {% for slide in slides %}
+    <div style="background: var(--bg-main); padding: 1.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; min-height: 220px;">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span class="badge badge-primary">Slide {{ slide.slide_number }}</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Presentation Deck</span>
+        </div>
+        <h3 style="color: white; font-size: 1.15rem; margin-bottom: 0.75rem;">{{ slide.title }}</h3>
+        <ul style="padding-left: 1.25rem; font-size: 0.85rem; color: var(--text-secondary);">
+          {% for b in slide.bullets %}
+          <li>{{ b }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-color); font-size: 0.75rem; color: var(--text-muted);">
+        <strong>Speaker Notes:</strong> {{ slide.notes }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

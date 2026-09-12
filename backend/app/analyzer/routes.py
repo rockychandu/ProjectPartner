@@ -99,3 +99,134 @@ def view_analyzer(project_id):
         comparison=comparison,
         guidance=guidance
     )
+
+
+@analyzer_bp.route('/api/run-checks', methods=['POST'])
+@analyzer_bp.route('/run-checks', methods=['POST'])
+def api_run_checks():
+    """
+    TrainPlex Run Checks & measure.py Pipeline API.
+    Handles ZIP upload (up to 100 MB), extracts archive, executes measure.py as a subprocess,
+    captures exit code, stdout, stderr, and ALWAYS returns valid JSON for both success and failure.
+    """
+    import sys
+    import subprocess
+    import tempfile
+    import traceback
+
+    try:
+        file_upload = request.files.get('project_zip') or request.files.get('file') or request.files.get('zip_file')
+        repo_url = request.form.get('repo_url') or request.form.get('github_url')
+        project_path = request.form.get('project_path')
+
+        temp_dir_obj = tempfile.TemporaryDirectory()
+        target_dir = temp_dir_obj.name
+
+        if file_upload and file_upload.filename.endswith('.zip'):
+            filename = SecurityValidator.sanitize_string(file_upload.filename)
+            zip_path = os.path.join(target_dir, 'uploaded_project.zip')
+            file_upload.save(zip_path)
+
+            extract_dir = os.path.join(target_dir, 'extracted')
+            os.makedirs(extract_dir, exist_ok=True)
+            try:
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(extract_dir)
+                target_dir = extract_dir
+            except zipfile.BadZipFile as e:
+                return jsonify({
+                    "success": False,
+                    "error": f"Invalid or corrupted ZIP archive: {str(e)}",
+                    "exit_code": 1,
+                    "stdout": "",
+                    "stderr": traceback.format_exc()
+                }), 400
+        elif project_path and os.path.exists(project_path):
+            target_dir = project_path
+        else:
+            target_dir = current_app.config['BASE_DIR']
+
+        # Determine path to measure.py
+        base_dir = current_app.config['BASE_DIR']
+        measure_script = os.path.join(base_dir, 'measure.py')
+        out_dir = os.path.join(target_dir, 'measure_output')
+        os.makedirs(out_dir, exist_ok=True)
+
+        python_exec = sys.executable or 'python'
+        cmd = [python_exec, measure_script, target_dir, '--out', out_dir, '--no-llm', '--build', 'none']
+
+        stdout = ""
+        stderr = ""
+        exit_code = 0
+
+        try:
+            res = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=300,
+                errors='replace'
+            )
+            stdout = res.stdout
+            stderr = res.stderr
+            exit_code = res.returncode
+        except subprocess.TimeoutExpired as e:
+            stdout = e.stdout or ""
+            stderr = e.stderr or "Execution timed out after 300 seconds."
+            return jsonify({
+                "success": False,
+                "error": "measure.py execution timed out (limit: 300 seconds)",
+                "exit_code": -1,
+                "stdout": stdout,
+                "stderr": stderr
+            }), 500
+        except Exception as e:
+            return jsonify({
+                "success": False,
+                "error": f"Subprocess execution failure: {str(e)}",
+                "exit_code": -1,
+                "stdout": "",
+                "stderr": traceback.format_exc()
+            }), 500
+
+        # Read measurement.json if available
+        measurement_json_path = os.path.join(out_dir, 'measurement.json')
+        measurement_data = {}
+        if os.path.exists(measurement_json_path):
+            try:
+                with open(measurement_json_path, 'r', encoding='utf-8') as f:
+                    measurement_data = json.load(f)
+            except Exception:
+                pass
+
+        if exit_code != 0:
+            return jsonify({
+                "success": False,
+                "error": f"measure.py failed with exit code {exit_code}",
+                "exit_code": exit_code,
+                "stdout": stdout,
+                "stderr": stderr,
+                "measurement": measurement_data
+            }), 400
+
+        return jsonify({
+            "success": True,
+            "exit_code": exit_code,
+            "message": "TrainPlex checks and measure.py completed successfully",
+            "stdout": stdout,
+            "stderr": stderr,
+            "total_loc": measurement_data.get('tree', {}).get('total_loc', 0),
+            "total_files": measurement_data.get('tree', {}).get('total_source_files', 0),
+            "primary_language": measurement_data.get('tree', {}).get('primary_language', 'Python'),
+            "measurement": measurement_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"Unhandled Server Exception: {str(e)}",
+            "exit_code": -1,
+            "stdout": "",
+            "stderr": traceback.format_exc()
+        }), 500
+

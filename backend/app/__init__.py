@@ -59,6 +59,34 @@ def create_app(config_class=Config):
     def index():
         return render_template('landing.html')
 
+    # Global JSON error handlers to prevent HTML error responses on API endpoints
+    @app.errorhandler(413)
+    def request_entity_too_large(e):
+        return jsonify({
+            "success": False,
+            "error": "File Upload Size Exceeded (Maximum 100 MB)",
+            "details": str(e),
+            "exit_code": 413
+        }), 413
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return jsonify({
+            "success": False,
+            "error": "Internal Server Error",
+            "details": str(e),
+            "exit_code": 500
+        }), 500
+
+    @app.errorhandler(504)
+    def gateway_timeout_error(e):
+        return jsonify({
+            "success": False,
+            "error": "Gateway Timeout (Process took longer than allowed execution time)",
+            "details": str(e),
+            "exit_code": 504
+        }), 504
+
     with app.app_context():
         db.create_all()
 
